@@ -81,6 +81,7 @@ const (
 	ssaScriptInfoNameTitle               = "Title"
 	ssaScriptInfoNameUpdateDetails       = "Update Details"
 	ssaScriptInfoNameWrapStyle           = "WrapStyle"
+	ssaScriptInfoScaledBorderAndShadow   = "ScaledBorderAndShadow"
 )
 
 // SSA section names
@@ -293,21 +294,22 @@ func newSSAColorFromColor(i *Color) string {
 
 // ssaScriptInfo represents an SSA script info block
 type ssaScriptInfo struct {
-	collisions          string
-	comments            []string
-	originalEditing     string
-	originalScript      string
-	originalTiming      string
-	originalTranslation string
-	playDepth           *int
-	playResX, playResY  *int
-	scriptType          string
-	scriptUpdatedBy     string
-	synchPoint          string
-	timer               *float64
-	title               string
-	updateDetails       string
-	wrapStyle           string
+	collisions            string
+	comments              []string
+	originalEditing       string
+	originalScript        string
+	originalTiming        string
+	originalTranslation   string
+	playDepth             *int
+	playResX, playResY    *int
+	scriptType            string
+	scriptUpdatedBy       string
+	synchPoint            string
+	timer                 *float64
+	title                 string
+	updateDetails         string
+	wrapStyle             string
+	scaledBorderAndShadow bool
 }
 
 // newSSAScriptInfo builds an SSA script info block based on metadata
@@ -328,6 +330,7 @@ func newSSAScriptInfo(m *Metadata) (o *ssaScriptInfo) {
 		o.playResY = m.SSAPlayResY
 		o.scriptType = m.SSAScriptType
 		o.scriptUpdatedBy = m.SSAScriptUpdatedBy
+		o.scaledBorderAndShadow = m.SSAScaledBorderAndShadow
 		o.synchPoint = m.SSASynchPoint
 		o.timer = m.SSATimer
 		o.title = m.Title
@@ -362,6 +365,10 @@ func (b *ssaScriptInfo) parse(header, content string) (err error) {
 		b.updateDetails = content
 	case ssaScriptInfoNameWrapStyle:
 		b.wrapStyle = content
+	case ssaScriptInfoScaledBorderAndShadow:
+		if content == "yes" || content == "1" {
+			b.scaledBorderAndShadow = true
+		}
 	// Int
 	case ssaScriptInfoNamePlayResX, ssaScriptInfoNamePlayResY, ssaScriptInfoNamePlayDepth:
 		var v int
@@ -390,22 +397,23 @@ func (b *ssaScriptInfo) parse(header, content string) (err error) {
 // metadata returns the block as Metadata
 func (b *ssaScriptInfo) metadata() *Metadata {
 	return &Metadata{
-		Comments:               b.comments,
-		SSACollisions:          b.collisions,
-		SSAOriginalEditing:     b.originalEditing,
-		SSAOriginalScript:      b.originalScript,
-		SSAOriginalTiming:      b.originalTiming,
-		SSAOriginalTranslation: b.originalTranslation,
-		SSAPlayDepth:           b.playDepth,
-		SSAPlayResX:            b.playResX,
-		SSAPlayResY:            b.playResY,
-		SSAScriptType:          b.scriptType,
-		SSAScriptUpdatedBy:     b.scriptUpdatedBy,
-		SSASynchPoint:          b.synchPoint,
-		SSATimer:               b.timer,
-		SSAUpdateDetails:       b.updateDetails,
-		SSAWrapStyle:           b.wrapStyle,
-		Title:                  b.title,
+		Comments:                 b.comments,
+		SSACollisions:            b.collisions,
+		SSAOriginalEditing:       b.originalEditing,
+		SSAOriginalScript:        b.originalScript,
+		SSAOriginalTiming:        b.originalTiming,
+		SSAOriginalTranslation:   b.originalTranslation,
+		SSAPlayDepth:             b.playDepth,
+		SSAPlayResX:              b.playResX,
+		SSAPlayResY:              b.playResY,
+		SSAScriptType:            b.scriptType,
+		SSAScriptUpdatedBy:       b.scriptUpdatedBy,
+		SSASynchPoint:            b.synchPoint,
+		SSATimer:                 b.timer,
+		SSAUpdateDetails:         b.updateDetails,
+		SSAWrapStyle:             b.wrapStyle,
+		SSAScaledBorderAndShadow: b.scaledBorderAndShadow,
+		Title:                    b.title,
 	}
 }
 
@@ -460,6 +468,9 @@ func (b *ssaScriptInfo) bytes() (o []byte) {
 	}
 	if len(b.wrapStyle) > 0 {
 		o = appendStringToBytesWithNewLine(o, ssaScriptInfoNameWrapStyle+": "+b.wrapStyle)
+	}
+	if b.scaledBorderAndShadow {
+		o = appendStringToBytesWithNewLine(o, ssaScriptInfoNameWrapStyle+": "+map[bool]string{true: "yes", false: "no"}[b.scaledBorderAndShadow])
 	}
 	return
 }
@@ -930,7 +941,7 @@ func newSSAEventFromItem(i Item) (e *ssaEvent) {
 		}
 		lines = append(lines, strings.Join(items, " "))
 	}
-	e.text = strings.Join(lines, "\\n")
+	e.text = strings.Join(lines, "\\N")
 	return
 }
 
@@ -1057,10 +1068,10 @@ func (e *ssaEvent) item(styles map[string]*Style) (i *Item, err error) {
 	}
 
 	// \N and \n are both valid new line characters in SSA
-	text := strings.ReplaceAll(e.text, "\\N", "\\n")
+	text := strings.ReplaceAll(e.text, "\\n", "\\N")
 
 	// Loop through lines
-	for _, s := range strings.Split(text, "\\n") {
+	for _, s := range strings.Split(text, "\\N") {
 		// Init
 		s = strings.TrimSpace(s)
 		var l = Line{VoiceName: e.name}

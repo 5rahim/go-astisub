@@ -115,8 +115,9 @@ type Subtitles struct {
 // NewSubtitles creates new subtitles
 func NewSubtitles() *Subtitles {
 	return &Subtitles{
-		Regions: make(map[string]*Region),
-		Styles:  make(map[string]*Style),
+		Metadata: &Metadata{},
+		Regions:  make(map[string]*Region),
+		Styles:   make(map[string]*Style),
 	}
 }
 
@@ -449,6 +450,7 @@ type Metadata struct {
 	SSATimer                                            *float64
 	SSAUpdateDetails                                    string
 	SSAWrapStyle                                        string
+	SSAScaledBorderAndShadow                            bool
 	STLCountryOfOrigin                                  string
 	STLCreationDate                                     *time.Time
 	STLDisplayStandardCode                              string
