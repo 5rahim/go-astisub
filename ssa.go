@@ -470,7 +470,7 @@ func (b *ssaScriptInfo) bytes() (o []byte) {
 		o = appendStringToBytesWithNewLine(o, ssaScriptInfoNameWrapStyle+": "+b.wrapStyle)
 	}
 	if b.scaledBorderAndShadow {
-		o = appendStringToBytesWithNewLine(o, ssaScriptInfoNameWrapStyle+": "+map[bool]string{true: "yes", false: "no"}[b.scaledBorderAndShadow])
+		o = appendStringToBytesWithNewLine(o, ssaScriptInfoScaledBorderAndShadow+": "+map[bool]string{true: "yes", false: "no"}[b.scaledBorderAndShadow])
 	}
 	return
 }
