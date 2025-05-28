@@ -31,6 +31,30 @@ func parseDurationSRT(i string) (d time.Duration, err error) {
 	return
 }
 
+func isTimeBoundariesLine(line string) bool {
+	// Check if the line contains the time boundaries separator
+	hasSeparator := strings.Contains(line, srtTimeBoundariesSeparator)
+	if !hasSeparator {
+		return false
+	}
+	// Check if the line has at least two parts when split by the separator
+	// And both parts are time formatted
+	parts := strings.Split(line, srtTimeBoundariesSeparator)
+	if len(parts) < 2 {
+		return false
+	}
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			return false
+		}
+		if _, err := parseDurationSRT(part); err != nil {
+			return false
+		}
+	}
+	return true
+}
+
 // ReadFromSRT parses an .srt content
 func ReadFromSRT(i io.Reader) (o *Subtitles, err error) {
 	// Init
@@ -57,7 +81,7 @@ func ReadFromSRT(i io.Reader) (o *Subtitles, err error) {
 		}
 
 		// Line contains time boundaries
-		if strings.Contains(line, srtTimeBoundariesSeparator) {
+		if isTimeBoundariesLine(line) {
 			// Reset style attributes
 			sa = &StyleAttributes{}
 

@@ -1,0 +1,11 @@
+﻿1
+00:00:00,331 --> 00:00:03,750
+What a dummy.
+
+2
+00:00:04,101 --> 00:00:05,430
+After all the bragging he did about it...
+
+3
+00:00:06,331 --> 00:00:09,675
+Inage <--> Shinagawa

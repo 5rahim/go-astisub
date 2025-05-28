@@ -1,7 +1,5 @@
-[![GoReportCard](http://goreportcard.com/badge/github.com/asticode/go-astisub)](http://goreportcard.com/report/github.com/asticode/go-astisub)
-[![GoDoc](https://godoc.org/github.com/asticode/go-astisub?status.svg)](https://godoc.org/github.com/asticode/go-astisub)
-[![Test](https://github.com/asticode/go-astisub/actions/workflows/test.yml/badge.svg)](https://github.com/asticode/go-astisub/actions/workflows/test.yml)
-[![Coveralls](https://coveralls.io/repos/github/asticode/go-astisub/badge.svg?branch=master)](https://coveralls.io/github/asticode/go-astisub)
+[![GoReportCard](http://goreportcard.com/badge/github.com/5rahim/go-astisub)](http://goreportcard.com/report/github.com/5rahim/go-astisub)
+[![GoDoc](https://godoc.org/github.com/5rahim/go-astisub?status.svg)](https://godoc.org/github.com/5rahim/go-astisub)
 
 This is a Golang library to manipulate subtitles. 
 
@@ -13,11 +11,11 @@ Available operations are `parsing`, `writing`, `applying linear correction`, `sy
 
 To install the library:
 
-    go get github.com/asticode/go-astisub
+    go get github.com/5rahim/go-astisub
 
 To install the CLI:
 
-    go install github.com/asticode/go-astisub/astisub        
+    go install github.com/5rahim/go-astisub/astisub        
 
 # Using the library in your code
 

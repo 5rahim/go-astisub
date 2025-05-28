@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/asticode/go-astisub"
+	"github.com/5rahim/go-astisub"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -162,4 +162,18 @@ func TestSRTParseDuration(t *testing.T) {
 	assert.Equal(t, 1*time.Second+876*time.Millisecond, s.Items[0].StartAt)
 	assert.Equal(t, 3*time.Second+390*time.Millisecond, s.Items[0].EndAt)
 	assert.Equal(t, "Duration without enclosing space", s.Items[0].Lines[0].String())
+}
+
+func TestSRTDurationSeparatorInDialogue(t *testing.T) {
+	testData := `1
+00:00:06,331 --> 00:00:09,675
+Inage <--> Shinagawa`
+
+	s, err := astisub.ReadFromSRT(strings.NewReader(testData))
+	require.NoError(t, err)
+
+	require.Len(t, s.Items, 1)
+	assert.Equal(t, 6*time.Second+331*time.Millisecond, s.Items[0].StartAt)
+	assert.Equal(t, 9*time.Second+675*time.Millisecond, s.Items[0].EndAt)
+	assert.Equal(t, "Inage <--> Shinagawa", s.Items[0].Lines[0].String())
 }
